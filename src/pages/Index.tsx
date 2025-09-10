@@ -4,11 +4,11 @@ import Contact from "@/components/Contact";
 
 const Index = () => {
   return (
-    <>
+    <div className="font-body">
       <Hero />
       <Services />
       <Contact />
-    </>
+    </div>
   );
 };
 
