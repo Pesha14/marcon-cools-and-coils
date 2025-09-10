@@ -47,6 +47,16 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Custom colors
+        'tech-blue': {
+          DEFAULT: "hsl(var(--tech-blue))",
+          light: "hsl(var(--tech-blue-light))",
+          dark: "hsl(var(--tech-blue-dark))",
+        },
+        'cool-gray': {
+          DEFAULT: "hsl(var(--cool-gray))",
+          light: "hsl(var(--cool-gray-light))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
