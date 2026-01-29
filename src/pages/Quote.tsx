@@ -35,10 +35,45 @@ const Quote = () => {
       return;
     }
 
-    // Here you would typically send the data to your backend
+    // Format message for WhatsApp
+    const serviceLabels: Record<string, string> = {
+      "ac-installation": "AC Installation",
+      "ac-repair": "AC Repair & Maintenance",
+      "cold-room-installation": "Cold Room Installation",
+      "cold-room-repair": "Cold Room Repair & Maintenance",
+      "motor-rewinding": "Motor Rewinding & Servicing",
+      "multiple": "Multiple Services"
+    };
+
+    const urgencyLabels: Record<string, string> = {
+      "emergency": "Emergency (Same Day)",
+      "urgent": "Urgent (Within 3 Days)",
+      "normal": "Normal (Within 1 Week)",
+      "planning": "Planning (Within 1 Month)"
+    };
+
+    const message = `
+*NEW QUOTE REQUEST*
+
+*Name:* ${formData.name}
+*Phone:* ${formData.phone}
+${formData.email ? `*Email:* ${formData.email}` : ''}
+*Location:* ${formData.location}
+*Service:* ${serviceLabels[formData.serviceType] || formData.serviceType}
+*Urgency:* ${urgencyLabels[formData.urgency] || formData.urgency}
+*Preferred Contact:* ${formData.preferredContact}
+
+*Description:*
+${formData.description}
+    `.trim();
+
+    // Open WhatsApp with pre-filled message
+    const whatsappUrl = `https://wa.me/254727953604?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+
     toast({
-      title: "Quote Request Submitted!",
-      description: "We'll contact you within 30 minutes to discuss your requirements.",
+      title: "Opening WhatsApp",
+      description: "Complete sending your quote request via WhatsApp.",
     });
 
     // Reset form
