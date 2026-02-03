@@ -8,6 +8,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { Phone, Mail, MapPin, Clock, CheckCircle2, Star } from "lucide-react";
+import {
+  OWNER_EMAIL,
+  PRIMARY_PHONE_LOCAL,
+  SECONDARY_PHONE_LOCAL,
+  openEmailDraft,
+  openPhoneCall,
+  openWhatsAppChat,
+} from "@/lib/contact";
 
 const Quote = () => {
   const { toast } = useToast();
@@ -25,6 +33,24 @@ const Quote = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!formData.serviceType || !formData.urgency) {
+      toast({
+        title: "Missing Service Details",
+        description: "Please select both service type and urgency level.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (formData.preferredContact === "email" && !formData.email) {
+      toast({
+        title: "Email Required",
+        description: "Please enter your email address to continue with email.",
+        variant: "destructive",
+      });
+      return;
+    }
     
     if (!formData.agreeToTerms) {
       toast({
@@ -52,29 +78,67 @@ const Quote = () => {
       "planning": "Planning (Within 1 Month)"
     };
 
-    const message = `
+    const serviceLabel = serviceLabels[formData.serviceType] || formData.serviceType;
+    const urgencyLabel = urgencyLabels[formData.urgency] || formData.urgency;
+
+    const whatsappMessage = `
 *NEW QUOTE REQUEST*
 
 *Name:* ${formData.name}
 *Phone:* ${formData.phone}
 ${formData.email ? `*Email:* ${formData.email}` : ''}
 *Location:* ${formData.location}
-*Service:* ${serviceLabels[formData.serviceType] || formData.serviceType}
-*Urgency:* ${urgencyLabels[formData.urgency] || formData.urgency}
+*Service:* ${serviceLabel}
+*Urgency:* ${urgencyLabel}
 *Preferred Contact:* ${formData.preferredContact}
 
 *Description:*
 ${formData.description}
     `.trim();
 
-    // Open WhatsApp with pre-filled message
-    const whatsappUrl = `https://wa.me/254727953604?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
+    const emailSubject = `Quote Request - ${serviceLabel} - ${formData.location}`;
+    const emailBody = [
+      "Hello Marcon Expertech Team,",
+      "",
+      "I would like to request a quotation for the service below.",
+      "",
+      "===== CUSTOMER DETAILS =====",
+      `Full Name: ${formData.name}`,
+      `Phone Number: ${formData.phone}`,
+      `Email Address: ${formData.email || "Not provided"}`,
+      `Location: ${formData.location}`,
+      "",
+      "===== REQUEST DETAILS =====",
+      `Service Needed: ${serviceLabel}`,
+      `Urgency: ${urgencyLabel}`,
+      `Preferred Contact Method: ${formData.preferredContact}`,
+      "",
+      "===== PROJECT DESCRIPTION =====",
+      formData.description,
+      "",
+      "Thank you,",
+      formData.name,
+    ].join("\n");
 
-    toast({
-      title: "Opening WhatsApp",
-      description: "Complete sending your quote request via WhatsApp.",
-    });
+    if (formData.preferredContact === "email") {
+      openEmailDraft(emailSubject, emailBody);
+      toast({
+        title: "Opening Email App",
+        description: "Review and send your quote email draft.",
+      });
+    } else if (formData.preferredContact === "whatsapp") {
+      openWhatsAppChat(whatsappMessage);
+      toast({
+        title: "Opening WhatsApp",
+        description: "Complete sending your quote request via WhatsApp.",
+      });
+    } else {
+      openPhoneCall(PRIMARY_PHONE_LOCAL);
+      toast({
+        title: "Opening Phone Dialer",
+        description: "Call to share your quote request details directly.",
+      });
+    }
 
     // Reset form
     setFormData({
@@ -135,7 +199,7 @@ ${formData.description}
             
             {/* Contact Information */}
             <div className="lg:col-span-1">
-              <Card className="sticky top-8">
+              <Card className="sticky top-24 border-primary/15 shadow-xl shadow-primary/10">
                 <CardHeader>
                   <CardTitle className="font-heading text-2xl text-primary">
                     Contact Information
@@ -152,11 +216,11 @@ ${formData.description}
                     <div>
                       <h4 className="font-semibold">Phone Numbers</h4>
                       <div className="space-y-1">
-                        <a href="tel:0727953604" className="block text-primary hover:underline">
-                          0727953604
+                        <a href={`tel:${PRIMARY_PHONE_LOCAL}`} className="block text-primary hover:underline">
+                          {PRIMARY_PHONE_LOCAL}
                         </a>
-                        <a href="tel:0734672200" className="block text-primary hover:underline">
-                          0734672200
+                        <a href={`tel:${SECONDARY_PHONE_LOCAL}`} className="block text-primary hover:underline">
+                          {SECONDARY_PHONE_LOCAL}
                         </a>
                       </div>
                     </div>
@@ -168,7 +232,7 @@ ${formData.description}
                     </div>
                     <div>
                       <h4 className="font-semibold">Email</h4>
-                      <p className="text-muted-foreground">info@marconexpertech.co.ke</p>
+                      <p className="text-muted-foreground">{OWNER_EMAIL}</p>
                     </div>
                   </div>
 
@@ -200,14 +264,14 @@ ${formData.description}
                     <div className="grid grid-cols-2 gap-3">
                       <Button 
                         className="bg-accent hover:bg-accent/90"
-                        onClick={() => window.open('tel:0727953604')}
+                        onClick={() => openPhoneCall(PRIMARY_PHONE_LOCAL)}
                       >
                         <Phone className="w-4 h-4 mr-2" />
                         Call Now
                       </Button>
                       <Button 
                         variant="outline"
-                        onClick={() => window.open('https://wa.me/254727953604')}
+                        onClick={() => openWhatsAppChat("Hello, I need help with a quote request.")}
                       >
                         WhatsApp
                       </Button>
@@ -219,7 +283,7 @@ ${formData.description}
 
             {/* Quote Form */}
             <div className="lg:col-span-2">
-              <Card>
+              <Card className="border-primary/15 shadow-xl shadow-primary/10">
                 <CardHeader>
                   <CardTitle className="font-heading text-3xl text-primary">
                     Request Your Free Quote
@@ -240,6 +304,7 @@ ${formData.description}
                           onChange={(e) => updateFormData('name', e.target.value)}
                           required
                           placeholder="Enter your full name"
+                          className="h-11"
                         />
                       </div>
                       <div>
@@ -251,6 +316,7 @@ ${formData.description}
                           onChange={(e) => updateFormData('phone', e.target.value)}
                           required
                           placeholder="0712345678"
+                          className="h-11"
                         />
                       </div>
                     </div>
@@ -264,6 +330,7 @@ ${formData.description}
                           value={formData.email}
                           onChange={(e) => updateFormData('email', e.target.value)}
                           placeholder="your.email@example.com"
+                          className="h-11"
                         />
                       </div>
                       <div>
@@ -274,6 +341,7 @@ ${formData.description}
                           onChange={(e) => updateFormData('location', e.target.value)}
                           required
                           placeholder="City, Area or County"
+                          className="h-11"
                         />
                       </div>
                     </div>
@@ -282,8 +350,8 @@ ${formData.description}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <Label htmlFor="serviceType">Service Type *</Label>
-                        <Select onValueChange={(value) => updateFormData('serviceType', value)}>
-                          <SelectTrigger>
+                        <Select value={formData.serviceType} onValueChange={(value) => updateFormData('serviceType', value)}>
+                          <SelectTrigger className="h-11">
                             <SelectValue placeholder="Select service type" />
                           </SelectTrigger>
                           <SelectContent>
@@ -298,8 +366,8 @@ ${formData.description}
                       </div>
                       <div>
                         <Label htmlFor="urgency">How Urgent? *</Label>
-                        <Select onValueChange={(value) => updateFormData('urgency', value)}>
-                          <SelectTrigger>
+                        <Select value={formData.urgency} onValueChange={(value) => updateFormData('urgency', value)}>
+                          <SelectTrigger className="h-11">
                             <SelectValue placeholder="Select urgency level" />
                           </SelectTrigger>
                           <SelectContent>
@@ -321,13 +389,17 @@ ${formData.description}
                         required
                         placeholder="Please describe your project requirements, location details, and any specific needs..."
                         rows={4}
+                        className="resize-none"
                       />
                     </div>
 
                     <div>
                       <Label>Preferred Contact Method</Label>
-                      <div className="flex gap-4 mt-2">
-                        <label className="flex items-center gap-2">
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        Choose whether to call, send WhatsApp, or send email.
+                      </p>
+                      <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                        <label className="flex items-center gap-2 rounded-lg border border-border p-3">
                           <input
                             type="radio"
                             name="preferredContact"
@@ -337,7 +409,7 @@ ${formData.description}
                           />
                           <span>Phone Call</span>
                         </label>
-                        <label className="flex items-center gap-2">
+                        <label className="flex items-center gap-2 rounded-lg border border-border p-3">
                           <input
                             type="radio"
                             name="preferredContact"
@@ -347,7 +419,7 @@ ${formData.description}
                           />
                           <span>WhatsApp</span>
                         </label>
-                        <label className="flex items-center gap-2">
+                        <label className="flex items-center gap-2 rounded-lg border border-border p-3">
                           <input
                             type="radio"
                             name="preferredContact"
@@ -372,11 +444,11 @@ ${formData.description}
                     </div>
 
                     <Button 
-                      type="submit" 
+                      type="submit"
                       size="lg" 
                       className="w-full bg-primary hover:bg-primary/90 text-white py-6 text-lg font-semibold"
                     >
-                      Submit Quote Request
+                      Continue With Selected Contact Method
                     </Button>
                   </form>
                 </CardContent>

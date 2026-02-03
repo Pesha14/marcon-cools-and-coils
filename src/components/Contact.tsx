@@ -1,6 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Phone, MapPin, Clock, MessageCircle, CheckCircle } from "lucide-react";
+import {
+  PRIMARY_PHONE_LOCAL,
+  SECONDARY_PHONE_LOCAL,
+  openPhoneCall,
+  openWhatsAppChat,
+} from "@/lib/contact";
 
 const Contact = () => {
   return (
@@ -44,24 +50,24 @@ const Contact = () => {
                   <Button 
                     size="lg"
                     className="bg-accent hover:bg-accent/90 text-white font-bold py-6 rounded-xl shadow-lg shadow-accent/25 transition-all duration-300 hover:scale-105"
-                    onClick={() => window.open('tel:0727953604')}
+                    onClick={() => openPhoneCall(PRIMARY_PHONE_LOCAL)}
                   >
                     <Phone className="w-5 h-5 mr-2" />
-                    0727 953 604
+                    {PRIMARY_PHONE_LOCAL}
                   </Button>
                   <Button 
                     size="lg"
                     className="bg-luxury-gold hover:bg-luxury-gold/90 text-primary font-bold py-6 rounded-xl shadow-lg shadow-luxury-gold/25 transition-all duration-300 hover:scale-105"
-                    onClick={() => window.open('tel:0734672200')}
+                    onClick={() => openPhoneCall(SECONDARY_PHONE_LOCAL)}
                   >
                     <Phone className="w-5 h-5 mr-2" />
-                    0734 672 200
+                    {SECONDARY_PHONE_LOCAL}
                   </Button>
                 </div>
                 <Button 
                   size="lg"
                   className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-6 rounded-xl shadow-lg shadow-green-500/25 transition-all duration-300 hover:scale-105 mt-2"
-                  onClick={() => window.open('https://wa.me/254727953604')}
+                  onClick={() => openWhatsAppChat("Hello, I need HVAC services")}
                 >
                   <MessageCircle className="w-5 h-5 mr-2" />
                   WhatsApp Us

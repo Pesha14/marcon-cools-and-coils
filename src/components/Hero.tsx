@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { Phone, CheckCircle2, Star, Award, Shield, ArrowDown } from "lucide-react";
+import { Phone, CheckCircle2, Star, Award, Shield, ArrowDown, MessageCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroImage from "@/assets/hero-bg.jpg";
+import { PRIMARY_PHONE_LOCAL, SECONDARY_PHONE_LOCAL, openPhoneCall, openWhatsAppChat } from "@/lib/contact";
 
 const Hero = () => {
   const scrollToServices = () => {
@@ -75,24 +76,32 @@ const Hero = () => {
               <Button 
                 size="lg" 
                 className="bg-gradient-to-r from-accent to-tech-blue-light hover:from-accent/90 hover:to-tech-blue-light/90 text-white px-8 py-7 text-lg font-semibold shadow-2xl shadow-accent/30 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 rounded-2xl border border-white/20"
-                onClick={() => window.open('tel:0727953604')}
+                onClick={() => openPhoneCall(PRIMARY_PHONE_LOCAL)}
               >
                 <Phone className="w-6 h-6 mr-3" />
                 <div className="flex flex-col items-start">
                   <span className="text-xs opacity-80 font-normal">Call Now</span>
-                  <span className="text-lg font-bold tracking-wide">0727 953 604</span>
+                  <span className="text-lg font-bold tracking-wide">{PRIMARY_PHONE_LOCAL}</span>
                 </div>
               </Button>
               <Button 
                 size="lg" 
                 className="bg-gradient-to-r from-luxury-gold to-luxury-gold-light hover:from-luxury-gold/90 hover:to-luxury-gold-light/90 text-primary-foreground px-8 py-7 text-lg font-semibold shadow-2xl shadow-luxury-gold/30 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 rounded-2xl"
-                onClick={() => window.open('tel:0734672200')}
+                onClick={() => openPhoneCall(SECONDARY_PHONE_LOCAL)}
               >
                 <Phone className="w-6 h-6 mr-3" />
                 <div className="flex flex-col items-start">
                   <span className="text-xs opacity-80 font-normal">Alternative</span>
-                  <span className="text-lg font-bold tracking-wide">0734 672 200</span>
+                  <span className="text-lg font-bold tracking-wide">{SECONDARY_PHONE_LOCAL}</span>
                 </div>
+              </Button>
+              <Button
+                size="lg"
+                className="bg-green-500 hover:bg-green-600 text-white px-8 py-7 text-lg font-semibold shadow-2xl shadow-green-500/30 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 rounded-2xl"
+                onClick={() => openWhatsAppChat("Hello, I need HVAC services")}
+              >
+                <MessageCircle className="mr-3 h-6 w-6" />
+                Chat on WhatsApp
               </Button>
             </div>
             

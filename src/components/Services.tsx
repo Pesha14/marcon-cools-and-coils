@@ -11,6 +11,7 @@ import {
   Star
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { PRIMARY_PHONE_LOCAL, openPhoneCall } from "@/lib/contact";
 
 // Import service images
 import acInstallationImg from "@/assets/ac-installation.jpg";
@@ -206,9 +207,9 @@ const Services = () => {
                 <Button 
                   size="lg" 
                   className="bg-white text-primary hover:bg-white/90 font-semibold px-8 py-6 text-lg rounded-xl shadow-lg"
-                  onClick={() => window.open('tel:0727953604')}
+                  onClick={() => openPhoneCall(PRIMARY_PHONE_LOCAL)}
                 >
-                  📞 Call 0727953604
+                  📞 Call {PRIMARY_PHONE_LOCAL}
                 </Button>
                 <Button 
                   size="lg" 

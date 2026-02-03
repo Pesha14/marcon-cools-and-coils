@@ -1,7 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { Phone, Menu, X } from "lucide-react";
+import { Phone, Menu, X, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import {
+  PRIMARY_PHONE_LOCAL,
+  SECONDARY_PHONE_LOCAL,
+  openWhatsAppChat,
+} from "@/lib/contact";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -18,21 +23,21 @@ const Header = () => {
             <span>🕒 Mon-Fri: 8AM-6PM | Emergency 24/7</span>
           </div>
           <div className="hidden md:flex items-center gap-4">
-            <a href="tel:0727953604" className="flex items-center gap-1 hover:text-accent transition-colors">
+            <a href={`tel:${PRIMARY_PHONE_LOCAL}`} className="flex items-center gap-1 hover:text-accent transition-colors">
               <Phone className="w-4 h-4" />
-              0727953604
+              {PRIMARY_PHONE_LOCAL}
             </a>
             <span>|</span>
-            <a href="tel:0734672200" className="flex items-center gap-1 hover:text-accent transition-colors">
+            <a href={`tel:${SECONDARY_PHONE_LOCAL}`} className="flex items-center gap-1 hover:text-accent transition-colors">
               <Phone className="w-4 h-4" />
-              0734672200
+              {SECONDARY_PHONE_LOCAL}
             </a>
           </div>
         </div>
       </div>
 
       {/* Main Navigation */}
-      <header className="bg-white/95 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+      <header className="sticky top-0 z-50 border-b border-gray-200/70 bg-white/90 shadow-sm backdrop-blur-md">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
@@ -66,10 +71,19 @@ const Header = () => {
               </Link>
               <div className="flex items-center gap-2">
                 <Button asChild size="sm" className="bg-accent hover:bg-accent/90">
-                  <a href="tel:0727953604">
+                  <a href={`tel:${PRIMARY_PHONE_LOCAL}`}>
                     <Phone className="w-4 h-4 mr-2" />
                     Call Now
                   </a>
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="border-green-500/40 text-green-700 hover:bg-green-50"
+                  onClick={() => openWhatsAppChat("Hello, I need HVAC services")}
+                >
+                  <MessageCircle className="w-4 h-4 mr-2" />
+                  WhatsApp
                 </Button>
               </div>
             </nav>
@@ -107,16 +121,25 @@ const Header = () => {
                 </Link>
                 <div className="flex flex-col gap-2 pt-2">
                   <Button asChild size="sm" className="bg-accent hover:bg-accent/90">
-                    <a href="tel:0727953604">
+                    <a href={`tel:${PRIMARY_PHONE_LOCAL}`}>
                       <Phone className="w-4 h-4 mr-2" />
-                      0727953604
+                      {PRIMARY_PHONE_LOCAL}
                     </a>
                   </Button>
                   <Button asChild size="sm" variant="outline">
-                    <a href="tel:0734672200">
+                    <a href={`tel:${SECONDARY_PHONE_LOCAL}`}>
                       <Phone className="w-4 h-4 mr-2" />
-                      0734672200
+                      {SECONDARY_PHONE_LOCAL}
                     </a>
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="border-green-500/40 text-green-700 hover:bg-green-50"
+                    onClick={() => openWhatsAppChat("Hello, I need HVAC services")}
+                  >
+                    <MessageCircle className="w-4 h-4 mr-2" />
+                    WhatsApp
                   </Button>
                 </div>
               </nav>
